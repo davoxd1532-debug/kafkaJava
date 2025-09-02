@@ -1,0 +1,3 @@
+com\compartamos\AppKafka.class
+com\compartamos\controller\ConnectKafka.class
+com\compartamos\conf\ConfigServer.class
