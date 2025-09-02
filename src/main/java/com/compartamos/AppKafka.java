@@ -25,11 +25,11 @@ public class AppKafka {
 
             // Enviar un SDT simulado (List<Map<String, String>>)
             Map<String, String> campo1 = new HashMap<>();
-            campo1.put("Descripcion", "Canal");
+            campo1.put("Nombre", "Canal");
             campo1.put("Valor", "AGENCIA");
 
             Map<String, String> campo2 = new HashMap<>();
-            campo2.put("Descripcion", "Monto");
+            campo2.put("Nombre", "Monto");
             campo2.put("Valor", "1000");
 
             kafka.sendSDT(topic, Arrays.asList(campo1, campo2));

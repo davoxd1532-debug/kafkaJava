@@ -50,11 +50,11 @@ public class ConnectKafka {
      */
     public void sendSDT(String topic, List<Map<String, String>> sdt) {
         try {
-            // Convertir la lista de mapas [{"Descripcion":"X","Valor":"Y"}, ...]
+            // Convertir la lista de mapas [{"Nombre":"X","Valor":"Y"}, ...]
             // en un único mapa { "X":"Y", ... }
             Map<String, String> flatMap = new java.util.HashMap<>();
             for (Map<String, String> item : sdt) {
-                String key = item.get("Descripcion");
+                String key = item.get("Nombre");
                 String value = item.get("Valor");
                 if (key != null && value != null) {
                     flatMap.put(key, value);
