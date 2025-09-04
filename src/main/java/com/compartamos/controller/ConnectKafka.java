@@ -5,7 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.w3c.dom.*;
+import org.json.JSONObject;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -84,6 +88,59 @@ public class ConnectKafka {
             System.out.println("Enviado al topic [" + topic + "]: " + message);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Envía un XML en formato String al topic, transformándolo en JSON plano.
+     * Ejemplo XML esperado:
+     *
+     * <root>
+     *   <RngParm.it>
+     *     <Nombre>Canal</Nombre>
+     *     <Valor>AGENCIA</Valor>
+     *   </RngParm.it>
+     *   <RngParm.it>
+     *     <Nombre>Monto</Nombre>
+     *     <Valor>1000</Valor>
+     *   </RngParm.it>
+     * </root>
+     *
+     * Se convertirá en:
+     * {"Canal":"AGENCIA","Monto":"1000"}
+     */
+    public void sendFromXml(String topic, String xml) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+
+            // Parsear el XML
+            Document doc = DocumentBuilderFactory.newInstance()
+                    .newDocumentBuilder()
+                    .parse(new java.io.ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+            doc.getDocumentElement().normalize();
+
+            NodeList items = doc.getElementsByTagName("RngParm.it");
+
+            for (int i = 0; i < items.getLength(); i++) {
+                Node node = items.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    String nombre = element.getElementsByTagName("Nombre").item(0).getTextContent();
+                    String valor  = element.getElementsByTagName("Valor").item(0).getTextContent();
+                    jsonObject.put(nombre, valor);
+                }
+            }
+
+            // Enviar al topic como JSON
+            String jsonMessage = jsonObject.toString();
+            ProducerRecord<String, String> record = new ProducerRecord<>(topic, jsonMessage);
+            producer.send(record);
+
+            System.out.println("XML convertido y enviado al topic [" + topic + "]: " + jsonMessage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error al procesar y enviar XML: " + e.getMessage());
         }
     }
 

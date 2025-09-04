@@ -33,6 +33,10 @@ public class AppKafka {
             campo2.put("Valor", "1000");
 
             kafka.sendSDT(topic, Arrays.asList(campo1, campo2));
+            
+            // Enviar un mensaje con formato XML
+            String sdtXml = "<RngParm xmlns=\"Microfinanzas\"><RngParm.it><Nombre>empresa</Nombre><Valor>1</Valor></RngParm.it><RngParm.it><Nombre>Canal</Nombre><Valor>Bantotal</Valor></RngParm.it><RngParm.it><Nombre>Monto</Nombre><Valor>1000</Valor></RngParm.it><RngParm.it><Nombre>Sucursal</Nombre><Valor>423</Valor></RngParm.it></RngParm>";
+            kafka.sendFromXml(topic, sdtXml);
 
         } finally {
             kafka.close();

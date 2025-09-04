@@ -29,5 +29,12 @@
             <artifactId>kafka-clients</artifactId>
             <version>3.7.0</version>
         </dependency>
+
+        <!-- JSON Org -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20231013</version>
+        </dependency>
     </dependencies>
 </project>
